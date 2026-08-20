@@ -1,0 +1,3 @@
+Manager	sara@company.com
+Agent	omar@company.com / lina@company.com
+Employee	ali@company.com / nour@company.com

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Register — HelpDesk Lite{% endblock %}
+{% block body %}
+<div class="auth-container">
+    <div class="auth-card fade-in">
+        <div class="auth-brand">
+            <h1><i class="fas fa-headset"></i> HelpDesk Lite</h1>
+            <p>Create your account</p>
+        </div>
+        {% if messages %}
+        <div class="messages">
+            {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags }}"><i class="fas fa-exclamation-circle"></i> {{ msg }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <form method="post" id="register-form">
+            {% csrf_token %}
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="form-group"><label class="form-label">First Name</label>{{ form.first_name }}</div>
+                <div class="form-group"><label class="form-label">Last Name</label>{{ form.last_name }}</div>
+            </div>
+            <div class="form-group"><label class="form-label">Email</label>{{ form.email }}</div>
+            <div class="form-group"><label class="form-label">Password</label>{{ form.password }}</div>
+            <div class="form-group"><label class="form-label">Role (Demo)</label>{{ form.role }}</div>
+            <button type="submit" class="btn btn-primary btn-block" id="register-submit">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+        </form>
+        <div class="auth-footer">Already have an account? <a href="{% url 'login' %}">Sign in</a></div>
+    </div>
+</div>
+{% endblock %}

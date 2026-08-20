@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Knowledge Base — HelpDesk Lite{% endblock %}
+{% block body %}
+<div class="app-container">
+    {% include "tickets/_sidebar.html" %}
+    <div class="main-content fade-in">
+        <div class="page-header">
+            <h1><i class="fas fa-book" style="color:var(--accent)"></i> Knowledge Base</h1>
+            <p>Search resolved tickets to find answers before submitting a new request</p>
+        </div>
+        <form method="get" class="filters-bar" id="kb-filters">
+            <div class="search-input-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" name="q" class="form-input" placeholder="Search resolved issues..." value="{{ search_query }}" id="kb-search">
+            </div>
+            <select name="category" class="form-select" id="kb-category" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for c in categories %}<option value="{{ c.id }}" {% if current_category == c.id|stringformat:"d" %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+            </select>
+            <button type="submit" class="btn btn-secondary btn-sm"><i class="fas fa-search"></i> Search</button>
+        </form>
+        <div class="kb-grid">
+            {% for t in tickets %}
+            <a href="{% url 'ticket_detail' t.request_id %}" class="kb-card" style="text-decoration:none;color:inherit">
+                <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px">
+                    <span class="ticket-id">{{ t.request_id }}</span>
+                    <span class="badge badge-{{ t.status }}">{{ t.get_status_display }}</span>
+                </div>
+                <h3>{{ t.title }}</h3>
+                <p>{{ t.description }}</p>
+                <div class="kb-meta">
+                    {% if t.category %}<span><i class="fas fa-tag"></i> {{ t.category }}</span>{% endif %}
+                    <span><i class="fas fa-calendar"></i> {{ t.resolved_at|date:"M d, Y"|default:t.updated_at|date:"M d, Y" }}</span>
+                </div>
+            </a>
+            {% empty %}
+            <div class="empty-state" style="grid-column:1/-1">
+                <i class="fas fa-search"></i>
+                <h3>No resolved tickets found</h3>
+                <p>{% if search_query %}Try a different search term{% else %}Resolved tickets will appear here as a knowledge base{% endif %}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

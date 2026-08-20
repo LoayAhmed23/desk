@@ -1,0 +1,140 @@
+﻿PRD
+1. Project title
+HelpDesk Lite
+2. What (Objective)
+Build a practical  lightweight internal helpdesk system 
+3. Why?
+The company wants to centralize requests and messages, clarify ownership, and provide visibility to all relevant parties.
+4. Who are the users?
+   1. employees submitting support requests
+   2. support or operations staff handling incoming requests
+   3. managers who need visibility into workload and open issues
+   4. product/operations stakeholders shaping the workflow
+   5. engineering stakeholders preparing the work for delivery
+   5. The problem:
+Currently employees send requests through too many channels that have  unclear ownership after submission and inconsistent follow-up, also there is difficulty knowing what is open, delayed, or complete. Finally managers don’t have oversight on these requests.
+   6. Solution:
+Build an app that has a centralized intake channel for all requests with clear assignment and ownership of tasks. Also there should be standard statuses that are assigned to each request(open, closed, etc). Clear visibility to relevant managers.
+   7. Functional requirements:
+      1. Automatically generate a unique request ID upon submission.
+      2. Allow users to select a category for their request (ex: IT).
+      3. Provide employees a centralized list of all incoming requests.
+      4. Enable managers to assign requests to specific agents.
+      5. Allow agents to update request statuses (open, closed, etc).
+      6. Provide a Manager Dashboard showing different workload views (open only, reopened, etc).
+      7. Allow employees to view the current status of their submitted requests.
+      8. Send automated confirmation to employees upon request submission.
+      9. Allow agents to add internal, private notes to a request.
+      10. Allow all resolved requests to be visible to the employees so they can search if their request was queried before.
+      11. Authenticate every employee using their current employee email.
+      8. Non functional requirements:
+      1. Keep the interface clean and free of complex enterprise menus.
+      2. Restrict system access to internal company employees only.
+      3. Load the request submission form quickly to avoid user frustration.
+      4. Refresh dashboard views efficiently without locking the browser.
+      9. UI references:
+      1. Figama
+      10. Depenecies:
+      1. Current company employees email list
+      11. Out of scope:
+      1. massive, complex enterprise platform
+Exection plan
+The 4 Lanes
+      * Move Now: No blockers, can start immediately.
+      * Resolve: Needs a decision before it can move.
+      * Prepare: design can happen while a blocker is resolved elsewhere.
+      * Hold: depends on another item finishing first.
+Action Plan
+Item
+	Lane
+	Owner
+	Status / Next Step
+	Email Authentication (Employee email login)
+	Move Now
+	Engineering
+	Ready
+	Unique Request ID (Auto-generation)
+	Move Now
+	Engineering
+	Ready
+	Automated Confirmations (Submission emails)
+	Move Now
+	Engineering
+	Ready
+	Internal Private Notes
+	Move Now
+	Engineering
+	Ready 
+	Manager Assignment Logic 
+	Move Now
+	Engineering
+	Ready
+	Request Categories 
+	Resolve
+	Product
+	Blocked - Needs a finalized, hardcoded list of valid categories.
+	Request Statuses 
+	Resolve
+	Product
+	Blocked - Needs exact definitions of all workflow states.
+	Request Body requirements
+	Resolve
+	Product
+	Blocked - Needs exact definitions of required information
+	Employee Centralized List 
+	Resolve
+	Product
+	Blocked - Clarify if employees should see all company requests, their own team only, or just their own.
+	Resolved Request Search
+	Resolve
+	Product
+	Blocked - Define search privacy rules
+	Employee Status View
+	Prepare
+	Engineering
+	Partial - Can build UI, but data mapping waits on Request Statuses.
+	Manager Dashboard 
+	Prepare
+	Engineering
+	Partial - Can build UI but waits on finalized Categories, Statuses, and Assignment logic.
+	
+
+Break down
+Epics
+      * Authentication & Access Control
+      * Request Intake & Tracking
+      * Agent Workspace & Workflow
+      * Manager Oversight & Dashboard
+      * Knowledge Base (Historical Resolved Requests)
+Epic Breakdown
+EPIC 1: Authentication & Access Control
+      * Story: As an employee, I need to securely log in using my existing company email so that the system verifies my identity and keeps unauthorized users out.
+      * Tasks:
+      * Implement employee email authentication.
+      * Apply domain restrictions to ensure only internal company employees can access the app.
+      * Ensure a clean, fast-loading login UI.
+EPIC 2: Request Intake & Tracking
+      * Story: As an employee, I want to submit a support request with a specific category and receive a unique ID and confirmation email, so I can easily track its progress.
+      * Tasks:
+      * Build a fast-loading request submission form.
+      * Implement logic to automatically generate a unique Request ID upon submission.
+      * Send confirmation emails on submission.
+      * Add Request Category selection UI (Blocked: ready once list is finalized).
+      * Build the Employee Status View UI to let users see their submitted requests (Partial: Awaiting Status definitions).
+EPIC 3: Request responses
+      * Story: As a responder, I need a centralized list to view assigned tickets, update their statuses, and add notes so that I can resolve issues efficiently without confusing the requester.
+      * Tasks:
+      * Build the centralized list view for incoming requests.
+      * Implement the Notes database and UI component.
+      * Add functionality to update request statuses (Blocked: Prepare to be done once Product defines exact workflow states).
+      * Define Request Body requirements/fields for the agent view (Blocked: Awaiting Product definitions).
+EPIC 4: Manager Oversight & Dashboard
+      * Story: As a manager, I want a dashboard that displays workload views and allows me to assign requests to specific people, so that I have complete oversight and can balance team workloads.
+      * Tasks:
+      * Implement Manager Assignment Logic backend and UI (Move Now).
+      * Build the Manager Dashboard UI. 
+EPIC 5: Knowledge Base (Resolved Requests)
+      * Story: As an employee, I want to search a repository of resolved requests so that I can find answers to my problems without needing to submit a new ticket.
+      * Tasks:
+      * Build a searchable directory of closed/resolved tickets.
+      * Implement search privacy rules/filters (Blocked: waiting for rules on what teams/employees can see).

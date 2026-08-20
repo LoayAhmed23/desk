@@ -1,0 +1,40 @@
+<!-- Sidebar Navigation Partial -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-icon"><i class="fas fa-headset"></i></div>
+        HelpDesk Lite
+    </div>
+    <nav class="sidebar-nav">
+        <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <i class="fas fa-th-large"></i> Dashboard
+        </a>
+        {% if not user.is_staff %}
+        <a href="{% url 'ticket_create' %}" class="nav-link {% if request.resolver_match.url_name == 'ticket_create' %}active{% endif %}">
+            <i class="fas fa-plus-circle"></i> New Request
+        </a>
+        {% endif %}
+        <a href="{% url 'ticket_list' %}" class="nav-link {% if request.resolver_match.url_name == 'ticket_list' %}active{% endif %}">
+            <i class="fas fa-ticket-alt"></i> {% if user.is_staff %}All Tickets{% else %}My Requests{% endif %}
+        </a>
+        <a href="{% url 'knowledge_base' %}" class="nav-link {% if request.resolver_match.url_name == 'knowledge_base' %}active{% endif %}">
+            <i class="fas fa-book"></i> Knowledge Base
+        </a>
+        {% if user.is_superuser %}
+        <a href="{% url 'manager_workload' %}" class="nav-link {% if request.resolver_match.url_name == 'manager_workload' %}active{% endif %}">
+            <i class="fas fa-chart-bar"></i> Team Workload
+        </a>
+        {% endif %}
+    </nav>
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar">{{ user.first_name.0|default:"U" }}{{ user.last_name.0|default:"" }}</div>
+            <div class="user-details">
+                <div class="user-name">{{ user.get_full_name|default:user.username }}</div>
+                <div class="user-role">{% if user.is_superuser %}Manager{% elif user.is_staff %}Agent{% else %}Employee{% endif %}</div>
+            </div>
+        </div>
+        <a href="{% url 'logout' %}" class="nav-link" style="margin-top:8px;color:var(--danger)">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+        </a>
+    </div>
+</aside>

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}{{ ticket.request_id }} — HelpDesk Lite{% endblock %}
+{% block body %}
+<div class="app-container">
+    {% include "tickets/_sidebar.html" %}
+    <div class="main-content fade-in">
+        {% if messages %}<div class="messages">{% for msg in messages %}<div class="alert alert-{{ msg.tags }}">{{ msg }}</div>{% endfor %}</div>{% endif %}
+        <div class="page-header">
+            <h1><span class="ticket-id" style="font-size:1.2rem">{{ ticket.request_id }}</span> {{ ticket.title }}</h1>
+            <p>Submitted by {{ ticket.submitter.get_full_name }} on {{ ticket.created_at|date:"M d, Y H:i" }}</p>
+        </div>
+        <div class="detail-grid">
+            <div>
+                <!-- Description -->
+                <div class="card" style="margin-bottom:20px">
+                    <h2 class="card-title" style="margin-bottom:12px">Description</h2>
+                    <p style="line-height:1.7;color:var(--text-secondary)">{{ ticket.description|linebreaksbr }}</p>
+                </div>
+                <!-- Agent: Update Status -->
+                {% if update_form %}
+                <div class="card" style="margin-bottom:20px">
+                    <h2 class="card-title" style="margin-bottom:12px"><i class="fas fa-edit" style="color:var(--accent)"></i> Update Ticket</h2>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="update_status">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                            <div class="form-group"><label class="form-label">Status</label>{{ update_form.status }}</div>
+                            <div class="form-group"><label class="form-label">Priority</label>{{ update_form.priority }}</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Update</button>
+                    </form>
+                </div>
+                {% endif %}
+                <!-- Agent: Add Note -->
+                {% if note_form %}
+                <div class="card" style="margin-bottom:20px">
+                    <h2 class="card-title" style="margin-bottom:12px"><i class="fas fa-sticky-note" style="color:var(--warning)"></i> Internal Notes</h2>
+                    {% if notes %}{% for n in notes %}
+                    <div class="note-item"><div class="note-meta"><strong>{{ n.author.get_full_name }}</strong> · {{ n.created_at|date:"M d, H:i" }}</div><div class="note-content">{{ n.content|linebreaksbr }}</div></div>
+                    {% endfor %}{% else %}<p style="color:var(--text-muted);font-size:.88rem;margin-bottom:12px">No notes yet.</p>{% endif %}
+                    <form method="post" style="margin-top:12px">{% csrf_token %}<input type="hidden" name="action" value="add_note">
+                        <div class="form-group">{{ note_form.content }}</div>
+                        <button type="submit" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i> Add Note</button>
+                    </form>
+                </div>
+                {% endif %}
+                <!-- Activity Log -->
+                <div class="card">
+                    <h2 class="card-title" style="margin-bottom:12px"><i class="fas fa-history" style="color:var(--info)"></i> Activity</h2>
+                    {% for a in activity %}
+                    <div class="activity-item"><div class="activity-meta">{{ a.user.get_full_name|default:"System" }} · {{ a.timestamp|date:"M d, H:i" }}</div><div class="activity-text">{{ a.action }}</div></div>
+                    {% empty %}<p style="color:var(--text-muted)">No activity recorded.</p>{% endfor %}
+                </div>
+            </div>
+            <div>
+                <!-- Meta Sidebar -->
+                <div class="card" style="margin-bottom:20px">
+                    <h2 class="card-title" style="margin-bottom:16px">Details</h2>
+                    <div class="detail-meta">
+                        <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value"><span class="badge badge-{{ ticket.status }}">{{ ticket.get_status_display }}</span></div></div>
+                        <div class="meta-item"><div class="meta-label">Priority</div><div class="meta-value"><span class="badge badge-{{ ticket.priority }}">{{ ticket.get_priority_display }}</span></div></div>
+                        <div class="meta-item"><div class="meta-label">Category</div><div class="meta-value">{{ ticket.category|default:"—" }}</div></div>
+                        <div class="meta-item"><div class="meta-label">Assigned To</div><div class="meta-value">{{ ticket.assigned_to.get_full_name|default:"Unassigned" }}</div></div>
+                    </div>
+                </div>
+                <!-- Manager: Assign -->
+                {% if assign_form %}
+                <div class="card">
+                    <h2 class="card-title" style="margin-bottom:12px"><i class="fas fa-user-plus" style="color:var(--success)"></i> Assign</h2>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="assign">
+                        <div class="form-group">{{ assign_form.assigned_to }}</div>
+                        <button type="submit" class="btn btn-success btn-sm btn-block"><i class="fas fa-check"></i> Assign Agent</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

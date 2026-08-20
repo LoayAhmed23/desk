@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Tickets — HelpDesk Lite{% endblock %}
+{% block body %}
+<div class="app-container">
+    {% include "tickets/_sidebar.html" %}
+    <div class="main-content fade-in">
+        <div class="page-header" style="display:flex;justify-content:space-between;align-items:center">
+            <div><h1>{% if user.is_staff %}All Tickets{% else %}My Requests{% endif %}</h1></div>
+            {% if not user.is_staff %}<a href="{% url 'ticket_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> New Request</a>{% endif %}
+        </div>
+        <form method="get" class="filters-bar" id="ticket-filters">
+            <div class="search-input-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" name="q" class="form-input" placeholder="Search tickets..." value="{{ search_query }}" id="ticket-search">
+            </div>
+            <select name="status" class="form-select" id="filter-status" onchange="this.form.submit()">
+                <option value="">All Statuses</option>
+                {% for val, label in status_choices %}<option value="{{ val }}" {% if current_status == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+            <select name="category" class="form-select" id="filter-category" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for c in categories %}<option value="{{ c.id }}" {% if current_category == c.id|stringformat:"d" %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+            </select>
+            <button type="submit" class="btn btn-secondary btn-sm"><i class="fas fa-filter"></i> Filter</button>
+        </form>
+        <div class="card">
+            <div class="table-wrap"><table>
+                <thead><tr><th>ID</th><th>Title</th><th>Status</th><th>Priority</th><th>{% if user.is_staff %}Submitter{% else %}Assigned To{% endif %}</th><th>Created</th></tr></thead>
+                <tbody>
+                {% for t in tickets %}
+                <tr>
+                    <td><a href="{% url 'ticket_detail' t.request_id %}" class="ticket-id">{{ t.request_id }}</a></td>
+                    <td><a href="{% url 'ticket_detail' t.request_id %}" class="ticket-link">{{ t.title }}</a></td>
+                    <td><span class="badge badge-{{ t.status }}">{{ t.get_status_display }}</span></td>
+                    <td><span class="badge badge-{{ t.priority }}">{{ t.get_priority_display }}</span></td>
+                    <td>{% if user.is_staff %}{{ t.submitter.get_full_name }}{% else %}{{ t.assigned_to.get_full_name|default:"Unassigned" }}{% endif %}</td>
+                    <td style="color:var(--text-muted);font-size:.82rem">{{ t.created_at|date:"M d, H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6"><div class="empty-state"><i class="fas fa-inbox"></i><h3>No tickets found</h3><p>{% if not user.is_staff %}<a href="{% url 'ticket_create' %}">Submit a new request</a>{% else %}Adjust your filters{% endif %}</p></div></td></tr>
+                {% endfor %}
+                </tbody>
+            </table></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
